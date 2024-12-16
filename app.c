@@ -254,7 +254,7 @@ int main()
             int i = totalDataFilm(&filmList) + 1;
             printf("Masukkan judul film: ");
             scanf("%s", &title);
-            printf("Masukkan duration film: ");
+            printf("Masukkan durasi film: ");
             scanf("%d", &duration);
             addFilm(&filmList, i, title, duration);
             system("pause");
