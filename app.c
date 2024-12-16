@@ -41,9 +41,22 @@ typedef struct Queue
 } Queue;
 
 Seat *createSeat(int seatNumber){
+  Seat *newSeat = (Seat *)malloc(sizeof(Seat));
+  newSeat->seatNumber = seatNumber;
+  newSeat->isBooked = 0;
+  newSeat->left = newSeat->right = NULL;
+  return newSeat;
 }
 
 Seat *insertSeat(Seat *root, int seatNumber){
+  if (root == NULL)
+    return createSeat(seatNumber);
+  if (seatNumber < root->seatNumber){
+    root->left = insertSeat(root->left, seatNumber);
+  } else if (seatNumber > root->seatNumber){
+    root->right = insertSeat(root->right, seatNumber);
+  }
+  return root;
 }
 
 void displaySeats(Seat *root){
@@ -56,15 +69,47 @@ int countAvailableSeats(Seat *root){
 }
 
 Film *createFilm(int id, char *title, int duration){
+  Film *newFilm = (Film *)malloc(sizeof(Film));
+  newFilm->id = id;
+  strcpy(newFilm->title, title);
+  newFilm->duration = duration;
+  newFilm->availableSeats = 10;
+  newFilm->seatTree = NULL;
+  for (int i = 1; i <= 10; i++){
+    newFilm->seatTree = insertSeat(newFilm->seatTree, i);
+  }
+  newFilm->next = NULL;
+  return newFilm;
 }
 
 void addFilm(Film **head, int id, char *title, int duration){
+  Film *newFilm = createFilm(id, title, duration);
+  if(*head == NULL){
+    *head = newFilm;
+  } else {
+    Film *temp = *head;
+    while (temp->next != NULL){
+      temp = temp->next;
+    }
+    temp->next = newFilm;
+  }
 }
 
 void displayFilms(Film *head){
+  printf("Daftar Film:\n");
+  while (head != NULL){
+    printf("%d. %s - (%d menit) - (%d Kursi Kosong)\n", head->id, head->title, head->duration, countAvailableSeats(head->seatTree));
+    head = head->next;
+  }
 }
 
 Film *findFilmById(Film *head, int id){
+  while (head != NULL){
+    if (head->id == id)
+    return head;
+    head = head->next;
+  }
+  return NULL;
 }
 
 Stack *push(Stack *top, char *booking){
@@ -74,10 +119,24 @@ void displayStack(Stack *top){
 }
 
 Queue *createQueue(){
-
+  Queue *q = (Queue *)malloc(sizeof(Queue));
+  q->front = q->rear = NULL;
+  return q;
 }
 
 void enqueue(Queue *q, char *name, int filmId, int tickets){
+  Node *newNode = (Node *)malloc(sizeof(Node));
+  strcpy(newNode->customerName, name);
+  newNode->filmId = filmId;
+  newNode->ticketCount = tickets;
+  newNode->next = NULL;
+
+  if (q->rear == NULL){
+    q->front = q->rear = newNode;
+    return;
+  }
+  q->rear->next = newNode;
+  q->rear = newNode;
 }
 
 void dequeue(Queue *q){
@@ -101,6 +160,9 @@ void resetFilmSeats(Film *head, int id){
 int main()
 {
     Film *filmList = NULL;
+    addFilm(&filmList, 1, "Avengers: Endgame", 180);
+    addFilm(&filmList, 2, "Spider-Man: No Way Home", 150);
+    addFilm(&filmList, 3, "The Batman", 175);
 
     Stack *history = NULL;
     Queue *queue = createQueue();
@@ -114,10 +176,31 @@ int main()
         printf("==================================\n| Sistem Pemesanan Tiket Bioskop |\n==================================\n| 1 | Tambah Antrian Tiket\n| 2 | Proses Antrian Tiket\n| 3 | Tampilkan Antrian Tiket\n| 4 | Tampilkan Riwayat Pemesanan\n| 5 | Penambahan Film\n| 6 | Penghapusan Film\n| 7 | Reset Kursi Sesuai Film\n| 8 | Keluar\n==================================\nPilihan: ");
         scanf("%d", &choice);
 
-        switch (choice)
-        {
+        switch (choice){
         case 1:
+          system("cls");
+          displayFilms(filmList);
+          printf("==========================================================\nMasukkan nama pelanggan: ");
+          scanf("%s", name);
+          printf("Masukkan ID film yang akan ditonton: ");
+          scanf("%d", &filmId);
+          Film *film = findFilmById(filmList, filmId);
+          if (film == NULL){
+            printf("==========================================================\nFilm dengan ID %d tidak ditemukan!\n", filmId);
+            system("pause");
             break;
+          }
+          printf("Masukkan jumlah tiket: ");
+          scanf("%d", &tickets);
+          if (tickets > film->availableSeats){
+            printf("==========================================================\nJumlah tiket melebihi kursi tersedia!\n");
+            system("pause");
+            break;
+          }
+          enqueue(queue, name, filmId, tickets);
+          printf("==========================================================\nAntrian berhasil ditambahkan!\n");
+          system("pause");
+          break;
         case 2:
             break;
         case 3:
