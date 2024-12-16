@@ -208,6 +208,7 @@ int main()
         case 4:
             break;
         case 5:
+            system("cls");
             break;
         case 6:
             break;
