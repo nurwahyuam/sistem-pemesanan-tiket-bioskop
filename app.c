@@ -170,8 +170,7 @@ int main()
     int choice, seatNumber, duration, filmId, tickets;
     char name[50], title[50], booking[50];
 
-    do
-    {
+    do {
         system("cls");
         printf("==================================\n| Sistem Pemesanan Tiket Bioskop |\n==================================\n| 1 | Tambah Antrian Tiket\n| 2 | Proses Antrian Tiket\n| 3 | Tampilkan Antrian Tiket\n| 4 | Tampilkan Riwayat Pemesanan\n| 5 | Penambahan Film\n| 6 | Penghapusan Film\n| 7 | Reset Kursi Sesuai Film\n| 8 | Keluar\n==================================\nPilihan: ");
         scanf("%d", &choice);
