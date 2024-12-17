@@ -113,9 +113,26 @@ Film *findFilmById(Film *head, int id){
 }
 
 Stack *push(Stack *top, char *booking){
+    Stack *newStack = (Stack *)malloc(sizeof(Stack));
+    strcpy(newStack->bookingHistory, booking);
+    newStack->next = top;
+    return newStack;
 }
 
 void displayStack(Stack *top){
+    if (top == NULL)
+    {
+        printf("Riwayat kosong!\n");
+        return;
+    }
+    int i = 1;
+    printf("Riwayat Pemesanan:\n");
+    while (top != NULL)
+    {
+        printf("%d. %s\n", i, top->bookingHistory);
+        top = top->next;
+        i++;
+    }
 }
 
 Queue *createQueue(){
@@ -140,9 +157,51 @@ void enqueue(Queue *q, char *name, int filmId, int tickets){
 }
 
 void dequeue(Queue *q){
+    if (q->front == NULL)
+    {
+        printf("Antrian kosong!\n");
+        return;
+    }
+
+    Node *temp = q->front;
+    q->front = q->front->next;
+
+    if (q->front == NULL)
+    {
+        q->rear = NULL;
+    }
+
+    free(temp);
 }
 
 void displayQueue(Queue *q, Film *filmList){
+    if (q->front == NULL)
+    {
+        printf("Antrian kosong!\n");
+        return;
+    }
+
+    Node *current = q->front;
+    int i = 1;
+
+    printf("Antrian Tiket:\n");
+    while (current != NULL)
+    {
+        Film *film = findFilmById(filmList, current->filmId);
+        if (film != NULL)
+        {
+            printf("Antrean %d\n", i);
+            printf("Costumer: %s\n", current->customerName);
+            printf("Film: %s\n", film->title);
+            printf("Tiket: %d\n\n", current->ticketCount);
+        }
+        else
+        {
+            printf("Antrean %d - Film tidak ditemukan!\n", i);
+        }
+        current = current->next;
+        i++;
+    }
 }
 
 int totalDataFilm(Film **filmList)
@@ -263,8 +322,14 @@ int main()
         case 2:
             break;
         case 3:
+            system("cls");
+            displayQueue(queue, filmList);
+            system("pause");
             break;
         case 4:
+            system("cls");
+            displayStack(history);
+            system("pause");
             break;
         case 5:
             system("cls");
