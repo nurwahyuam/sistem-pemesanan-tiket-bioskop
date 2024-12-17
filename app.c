@@ -145,10 +145,52 @@ void dequeue(Queue *q){
 void displayQueue(Queue *q, Film *filmList){
 }
 
-int totalDataFilm(Film **filmList){
+int totalDataFilm(Film **filmList)
+{
+    int count = 0;
+    Film *pCur;
+    pCur = *filmList;
+    while (pCur != NULL)
+        {
+            count += pCur->id;
+            pCur = pCur->next;
+        }
+    return count;
 };
 
-void deleteFilm(Film **head, int id){
+void deleteFilm(Film **head, int id)
+{
+    if (*head == NULL)
+    {
+        printf("Film dengan ID %d tidak ditemukan!\n", id);
+        return;
+    }
+    
+    Film *temp = *head;
+    Film *prev = NULL;
+
+    if (temp != NULL && temp ->id == id)
+    {
+        *head = temp->next;
+        free(temp);
+        printf("Film dengan ID %d berhasil dihapus!\n", id);
+    }
+
+    while (temp != NULL && temp ->id != id)
+        {
+            prev = temp;
+            temp = temp->next;
+        }
+
+    if (temp == NULL)
+    {
+        printf("Film dengan ID %d tidak ditemukan!\n", id);
+        return;
+    }
+
+    prev->next = temp->next;
+    free(temp);
+    printf ("Film dengan ID%d berhasil dihapus!\n", id);
 }
 
 void resetSeats(Seat *root){
@@ -207,8 +249,23 @@ int main()
         case 4:
             break;
         case 5:
+            system("cls");
+            int i = totalDataFilm(&filmList) + 1;
+            printf("Masukkan judul film: ");
+            scanf("%s", &title);
+            printf("Masukkan durasi film: ");
+            scanf("%d", &duration);
+            addFilm(&filmList, i, title, duration);
+            system("pause");
             break;
         case 6:
+            system("cls");
+            printf("List Data Film: ");
+            displayFilm(filmList);
+            printf("Masukkan Id Film yang akan dihapus: ");
+            scanf("%d", &filmId);
+            deleteFilm(&filmList, filmId);
+            system("pause");
             break;
         case 7:
             break;
