@@ -320,6 +320,45 @@ int main()
           system("pause");
           break;
         case 2:
+            if (queue->front != NULL)
+            {
+               film = findFilmById(filmList, queue->front->filmId);
+                if (film != NULL)
+                {
+                    for (int i = 0; i < queue->front->ticketCount);
+                    {
+                        system("cls");
+                        printf("Costumer: %s\nNomor kursi tersedia untuk film %s:\n", queue->front->customerName, film->title);
+                        displaySeats(film->seatTree);
+                        printf("Masukan nomor kursi: ");
+                        scanf("%d", &seatNumber);
+                        Seat *seat = bookSeat(film->seatTree, seatNumber);
+                        if (seat != NULL)
+                        {
+                            film->availableSeats--;
+                            i++;
+                        }
+                    }
+                    system("cls");
+                    printf("Costumer: %s\nNomor kursi tersedia untuk Film %s:\n", queue->front->customerName, film->title);
+                    displaySeats(film->seatTree);
+                    sprintf(booking, "%s (%s - %d tiket)", queue->front->customerName, film->title, queue->front->ticketCount);
+                    history = push(history, booking);
+                    dequeue(queue);
+                    printf("==========================================================\nPemesanan berhasil!\n");
+                    system("pause");
+                }
+                else
+                {
+                    printf("==========================================================\nFilm tidak ditemukan!\n");
+                    system("pause");
+                }
+            }
+            else
+            {
+                printf("==========================================================\nAntrian kosong!\n");
+                system("pause");
+            }
             break;
         case 3:
             system("cls");
