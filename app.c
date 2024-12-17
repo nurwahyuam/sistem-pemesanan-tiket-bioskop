@@ -193,10 +193,28 @@ void deleteFilm(Film **head, int id)
     printf ("Film dengan ID%d berhasil dihapus!\n", id);
 }
 
-void resetSeats(Seat *root){
+void resetSeats(Seat *root)
+{
+    if (root != NULL)
+    {
+        resetSeats(root->left);
+        root->isBooked = 0;
+        resetSeats(root->right);
+    }
 }
 
-void resetFilmSeats(Film *head, int id){
+void resetFilmSeats(Film *head, int id)
+{
+    Film *film = findFilmById(head, id);
+    if (film == NULL)
+    {
+        printf("Film dengan ID %d tidak ditemukan!\n", id);
+        return;
+    }
+    resetSeats(film->seatTree);
+    film->availableSeats = countAvailableSeats(film->seatTree);
+    displaySeats(film->seatTree);
+    printf("Kursi untuk film '%s' telah di-reset ke status kosong!\n", film->title);
 }
 
 int main()
